@@ -1,0 +1,726 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ольгерд Семёнов • Эзотерика и психология</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: radial-gradient(circle at 20% 30%, #2a3442, #141c28);
+            color: #eef4ff;
+            min-height: 100vh;
+            padding: 2rem 1rem 6rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+        h1, h2, h3, .section-title, .selected-title, .menu-btn-title, .service-title, .channel-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            background: linear-gradient(135deg, #f5e6d3, #e0d0b0, #cfb27c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        h1 {
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.15em;
+        }
+        .description-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #cfc09f;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        .duration-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: #cfc09f;
+        }
+        .page {
+            display: none;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .page.active {
+            display: block;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            padding-top: 1rem;
+        }
+        .logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(145deg, #e5cd9c, #c9b07a);
+            border-radius: 50%;
+            border: 2px solid rgba(240, 220, 180, 0.6);
+            box-shadow: 0 10px 30px -5px rgba(230, 210, 150, 0.4);
+            overflow: hidden;
+        }
+        .logo .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #3e2e1a;
+        }
+        .subtitle {
+            color: #bcc9e0;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        .main-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .menu-btn {
+            background: rgba(35, 45, 60, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(230, 200, 150, 0.2);
+            border-radius: 2rem;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            cursor: pointer;
+            transition: 0.4s;
+            width: 100%;
+            text-align: left;
+            box-shadow: 0 15px 25px -10px rgba(0,0,0,0.5);
+        }
+        .menu-btn:hover {
+            background: rgba(50, 60, 75, 0.9);
+            border-color: rgba(240, 210, 160, 0.4);
+            transform: translateY(-3px);
+        }
+        .menu-btn-content {
+            flex: 1;
+        }
+        .menu-btn-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+        }
+        .menu-btn-description {
+            font-size: 0.9rem;
+            color: #c0cde5;
+        }
+        .menu-btn-arrow {
+            font-size: 2rem;
+            color: #cfb27c;
+            opacity: 0.8;
+        }
+        .back-btn {
+            background: transparent;
+            color: #dac29c;
+            border: 1px solid #5f7390;
+            border-radius: 3rem;
+            padding: 0.7rem 1.8rem;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: inline-block;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            background: #2f4058;
+            border-color: #dac29c;
+        }
+        .service-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .service-item {
+            background: rgba(30, 40, 55, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid #4a5e7a;
+            border-radius: 2rem;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .service-item:hover {
+            background: #304055;
+            border-color: #cfb27c;
+        }
+        .service-details {
+            flex: 1;
+        }
+        .service-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+        }
+        .service-description {
+            font-size: 0.9rem;
+            color: #bccde2;
+        }
+        .service-price {
+            color: #e0cdad;
+            margin-top: 0.5rem;
+        }
+        .service-price .duration {
+            display: block;
+            color: #b0c2da;
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+        .service-arrow {
+            color: #cfb27c;
+            font-size: 1.8rem;
+            opacity: 0.6;
+        }
+        .channels-list {
+            display: grid;
+            gap: 1rem;
+        }
+        .channel-item {
+            background: rgba(30, 40, 55, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid #4a5e7a;
+            border-radius: 2rem;
+            padding: 1.2rem 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .channel-item:hover {
+            background: #304055;
+            border-color: #cfb27c;
+        }
+        .channel-name {
+            font-size: 1.4rem;
+        }
+        .channel-description {
+            font-size: 0.9rem;
+            color: #bccde2;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .selected-service {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #14212b;
+            border-top: 2px solid #cfb27c;
+            padding: 2rem 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.2,0.9,0.1,1);
+            z-index: 1000;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 -20px 40px -10px #000;
+            overscroll-behavior: contain;
+        }
+        .selected-service.active {
+            transform: translateY(0);
+        }
+        .selected-service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .selected-title {
+            font-size: 1.8rem;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #cfb27c;
+            font-size: 2.5rem;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+        .close-btn:hover {
+            background: #274052;
+        }
+        .selected-description {
+            white-space: pre-line;
+            color: #d9e5f5;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        .payment-container {
+            background: #1b2a37;
+            border-radius: 2rem;
+            padding: 2rem;
+            border: 1px solid #4e6b84;
+        }
+        .payment-title {
+            text-align: center;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #f5e6d3, #e0d0b0, #cfb27c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.8rem;
+        }
+        .payment-info {
+            background: #253746;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .payment-info p {
+            margin: 0.5rem 0;
+            color: #d0def0;
+        }
+        .payment-info strong {
+            color: #ecdbba;
+        }
+        .method-details {
+            margin: 2rem 0;
+        }
+        .method-details h4 {
+            font-weight: 400;
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(135deg, #f5e6d3, #e0d0b0, #cfb27c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .card-number {
+            font-size: 1.6rem;
+            font-family: monospace;
+            background: #14212b;
+            padding: 1.2rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.3rem;
+            margin: 1rem 0;
+            color: #ecdbba;
+            border: 1px solid #cfb27c;
+            box-shadow: inset 0 0 0 1px rgba(220,190,140,0.2);
+        }
+        .copy-btn {
+            background: #2b4053;
+            color: #ecdbba;
+            border: 1px solid #6f8aa8;
+            border-radius: 2rem;
+            padding: 0.7rem 2rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            margin: 0.5rem 0;
+        }
+        .copy-btn:hover {
+            background: #345a74;
+            border-color: #cfb27c;
+        }
+        .instruction-steps {
+            margin: 2rem 0;
+        }
+        .instruction-steps li {
+            margin: 0.7rem 0;
+            color: #c0d0e8;
+        }
+        .telegram-account-link {
+            display: block;
+            background: #345a74;
+            color: white;
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 3rem;
+            text-align: center;
+            border: 1px solid #cfb27c;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .telegram-account-link:hover {
+            background: #456e8b;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #6f8aa8;
+            font-size: 0.8rem;
+            border-top: 1px solid #2e4055;
+            padding-top: 2rem;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #ecdbba;
+            padding: 0.8rem 2rem;
+            border-radius: 3rem;
+            font-size: 1rem;
+            border: 1px solid #cfb27c;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="page active" id="homePage">
+    <div class="header">
+        <div class="logo"><div class="photo-placeholder"></div></div>
+        <h1>Ольгерд Семёнов</h1>
+        <div class="subtitle">Приветствую. Здесь вы можете ознакомиться с моими работами и услугами. Каждая из них способна изменить вашу жизнь.</div>
+    </div>
+    <div class="main-menu">
+        <div class="menu-btn" id="servicesBtn">
+            <div class="menu-btn-content">
+                <div class="menu-btn-title">Услуги</div>
+                <div class="menu-btn-description">индивидуальные курсы, расклады, консультации</div>
+            </div>
+            <div class="menu-btn-arrow">→</div>
+        </div>
+        <div class="menu-btn" id="channelsBtn">
+            <div class="menu-btn-content">
+                <div class="menu-btn-title">Каналы</div>
+                <div class="menu-btn-description">Telegram-каналы по темам</div>
+            </div>
+            <div class="menu-btn-arrow">→</div>
+        </div>
+        <div class="menu-btn" id="chatBtn">
+            <div class="menu-btn-content">
+                <div class="menu-btn-title">Общий чат</div>
+                <div class="menu-btn-description">общение, вопросы, поддержка</div>
+            </div>
+            <div class="menu-btn-arrow">→</div>
+        </div>
+    </div>
+</div>
+
+<div class="page" id="servicesPage">
+    <div class="back-btn" id="backToHomeFromServices">← назад</div>
+    <div class="section-title">Услуги</div>
+    <div class="service-list" id="servicesList"></div>
+</div>
+
+<div class="page" id="channelsPage">
+    <div class="back-btn" id="backToHomeFromChannels">← назад</div>
+    <div class="section-title">Каналы</div>
+    <div class="channels-list" id="channelsList"></div>
+</div>
+
+<div class="page" id="typingPage">
+    <div class="back-btn" id="backToServicesBtn">← к услугам</div>
+    <div class="section-title">Типирование</div>
+    <div class="service-list" id="typingServicesList"></div>
+</div>
+
+<div class="selected-service" id="selectedService">
+    <div class="selected-service-header">
+        <div class="selected-title" id="selectedTitle">Название</div>
+        <div class="close-btn" id="closeBtn">×</div>
+    </div>
+    <div class="selected-description" id="selectedDescription"></div>
+    <div class="payment-container">
+        <div class="payment-title">Оплата</div>
+        <div class="payment-info">
+            <p><strong>Услуга:</strong> <span id="paymentServiceTitle"></span></p>
+            <p><strong>Сумма:</strong> <span id="paymentAmount"></span> рублей</p>
+        </div>
+        <div id="regularPaymentDetails">
+            <div class="method-details">
+                <h4>Перевод по карте</h4>
+                <div class="card-number">2202 2068 6859 1301</div>
+                <div>Получатель Тимур С.</div>
+                <div>Сбербанк</div>
+                <button class="copy-btn" data-text="2202206868591301">скопировать номер</button>
+            </div>
+        </div>
+        <div id="typingPaymentDetails" style="display: none;">
+            <div class="method-details">
+                <h4>Перевод по карте</h4>
+                <div class="card-number">2200 0303 3041 4823</div>
+                <div>Получатель Владимир С.</div>
+                <div>ПСБ</div>
+                <button class="copy-btn" data-text="2200030330414823">скопировать номер</button>
+            </div>
+        </div>
+        <div class="instruction-steps">
+            <ol>
+                <li>Сделайте перевод на указанную карту</li>
+                <li>Сохраните скриншот или чек</li>
+                <li>Отправьте его в Telegram по кнопке ниже</li>
+            </ol>
+        </div>
+        <div class="telegram-account-link" id="telegramLink">Перейти в Telegram →</div>
+    </div>
+</div>
+
+
+<div class="toast" id="toast">скопировано</div>
+
+<script>
+(function() {
+    const mainServices = [
+        { id:1, title:"Гностическое Таро — от архетипа к откровению", description:"Суть курса:\nЭто не только обучение гаданию. Это посвящение в живую традицию, где каждая карта становится вратами в систему герметического знания. Курс восстанавливает разорванную связь между современным Таро и его истоками в философии Ренессанса, каббале и церемониальной магии.\n\nМетодология:\nОпора на первоисточники: Элифас Леви, Артур Уэйт, Алистер Кроули, манускрипты Золотой Зари. Синтез каббалы, астрологии, нумерологии. Универсальность: анализ колод Райдера-Уэйта, Таро Тота, Марсельского Таро.\n\nСтруктура:\nГлубокие лекции — более часа на каждую карту Старших и Младших Арканов. Уникальная техника «прямого считывания», позволяющая понимать карты без заучивания значений. Посвящение в гностическую линию Таро, обзор английской, французской и континентальной школ.\n\nПоддержка:\nЛичное сопровождение, пожизненный доступ, библиотека первоисточников.", price:5000, duration:"полный курс" },
+        { id:2, title:"Шёпот рунической мудрости — путь Старшего Футарка", description:"Суть курса:\nПогружение в традицию Северной Европы. Руны понимаются не только как гадательные символы, но как природные силы и архетипы, с которыми можно вступить в диалог.\n\nМетодология:\nОпора на Старшую и Младшую Эдду, рунические поэмы, археологические исследования. Руна как триединство: знак, звук, сила. Работа со всеми 24 рунами Старшего Футарка, разделение на три эттира.\n\nПрактика:\nГлубокий разбор каждой руны, создание и активация рунескриптов (гальдор), рунические медитации, искусство гадания от простых раскладов до сложных схем.\n\nРесурсы:\nЛичное сопровождение, пожизненный доступ, библиотека проверенных переводов.", price:4000, duration:"полный курс" },
+        { id:3, title:"От сердца к звёздам — астрология как язык судьбы", description:"Суть курса:\nПутешествие к себе через язык Вселенной. Натальная карта читается как карта души, где планеты, аспекты и дома раскрывают предназначение, вызовы и дары.\n\nМетодология:\nСинтез классической (эллинистической) и средневековой астрологии с современной психологией. Холистический подход, фокус на осознанный выбор.\n\nУникальные преимущества:\n1. Синтез архетипов и психологии — глубина вместо шаблонов.\n2. Практика «Навигатор жизни» — управление, а не фатальные предсказания.\n3. Ваша карта как лаборатория — сразу применяете теорию к себе.\n4. Возвращение к истокам — священная геометрия гороскопа.\n5. Живая система знаний — вечная подписка, все обновления бесплатно.\n\nПоддержка:\nЛичное менторство, закрытое сообщество, пожизненный доступ.", price:3000, duration:"полный курс" },
+        { id:4, title:"Магия без слёз — инициация в традицию", description:"Суть курса:\nСознательный разрыв с поп-эзотерикой. Магия как инженерная дисциплина духа, строгая, логичная, требовательная. Вы получите сборник мощных ритуалов и полноценную инициацию в живую традицию от античности до наших дней.\n\nМетодология:\nПрямая передача знания на трудах Эмпедокла, Ямвлиха, Джона Ди, Элифаса Леви, Алистера Кроули и других столпов западного эзотерического канона. Магия как инициатическая наука, где каждое действие имеет причину и следствие.\n\nПреимущества:\n1. Инициация, а не информация — передача преемственности.\n2. Конструктор реальности — научитесь создавать собственные ритуалы.\n3. Перепрошивка мировоззрения — от жертвы к творцу.\n4. Синтез тысячелетий — концентрированное знание без воды.\n5. Системный путь для новичка и инструмент для практика.\n\nПоддержка:\nЛичное сопровождение, сообщество, пожизненный доступ.", price:3500, duration:"полный курс" },
+        { id:5, title:"Расклад «Световой Ключ»", description:"Суть услуги:\nЭкспресс-расклад по обновлённой методологии, объединяющей точность классического Таро со скоростью современного анализа.\n\nФормат:\n5–7 карт: ядро ситуации, вызов, скрытые факторы, совет, итог. Вы выбираете фокус (любовь, карьера, финансы, здоровье, семья или конкретный запрос). Результат приходит текстовым сообщением с детальным разбором каждой позиции.", price:500, duration:"текстовый разбор" },
+        { id:6, title:"Расклад-консультация «Личный проводник»", description:"Формат:\nПолноценная личная консультация в формате аудио- или видеозвонка (Telegram). Расклад проводится в реальном времени, вы видите карты и получаете развёрнутую интерпретацию, можете задавать вопросы.\n\nСферы работы:\nЛюбая тема: отношения, карьера, здоровье, финансы, личностные кризисы.\n\nРезультат:\nНе просто предсказание, а проработанная стратегия с конкретными шагами. Длительность сессии 30–40 минут.", price:1500, duration:"консультация 40 мин" },
+        { id:7, title:"7 врат мощи — пробуждение чакр", description:"Суть курса:\nКурс направлен на прокачку энергетических центров человека (чакр) на основе тантрических учений Индии. Десятки людей уже раскрыли свой потенциал.\n\nЧто даёт курс:\n· Готовую систему медитаций и техник для каждой чакры.\n· Умение чувствовать и направлять потоки жизненной силы.\n· Доступ к скрытым ресурсам тела и сознания.\n· Энергетическое поле поддержки в группе.\n\nЕсли чакры заблокированы — курс их разблокирует. Если нет потока энергии — запустит.\n\nСемь врат:\nМуладхара — стабильность, деньги.\nСвадхистана — творчество, страсть, магнетизм.\nМанипура — воля, уверенность.\nАнахата — исцеление ран, любовь.\nВишудха — сила слова, влияние.\nАджна — интуиция, ясновидение.\nСахасрара — единство, свобода.\n\nВ конце — шанс на пробуждение Кундалини. Курс создан автором для себя и стал мощным инструментом, которым он делится.", price:3500, duration:"полный курс" },
+        { id:8, title:"Повелитель разума — психологическая самопомощь", description:"Суть курса:\nКурс, позволяющий максимально раскрыть человеческий потенциал, обрести осознанность и доступ к скрытым способностям без посещения психолога.\n\nЧто внутри:\nЛучшие психологические приёмы, ритуалы на спокойствие и изобилие, секреты тайм-менеджмента, практические навыки независимого заработка, лекции о скрытых способностях и причинах их подавления.\n\nКурс на грани психологии и эзотерики. Помог справиться с депрессией, апатией, неврозами без лекарств.\n\nВечная подписка, как и на все курсы.", price:4000, duration:"полный курс" },
+        { id:9, title:"Исцеление в Чёрной Пирамиде — медитации", description:"Суть курса:\nКурс авторских медитаций, записанных голосом автора под специальные тета- и альфа-ритмы для максимального воздействия на подсознание.\n\nПомогает при:\nдепрессии, апатии, нехватке денег, выгорании, проблемах в отношениях, неврозах, лени, отсутствии цели, психосоматике, проблемах с удачей и многом другом.\n\nВ основе — индийские и тибетские техники, а также классики гипнотерапии. Во время практик создаётся виртуальный храм — Чёрная Пирамида в духе масонских и древнеегипетских традиций.\n\nБолее 50 медитаций, остаются с вами навсегда.", price:1500, duration:"курс медитаций" },
+        { id:10, title:"Космограмма души — анализ натальной карты", description:"Суть:\nНе гороскоп, а карта сокровищ вашей души. Натальная карта — ваш духовный генетический код, схема личности, данная при рождении.\n\nМетодология:\nСинтез классической (традиционной) астрологии и психологической (эволюционной) астрологии. Особое внимание уделяется Плутону.\n\nЧто входит:\n1. Сбор данных и предварительный расчёт.\n2. Персональная консультация (60–90 минут) в аудио/видеоформате с разбором всех ключевых элементов.\n3. Итоговый текстовый отчёт: Солнце, Луна, Асцендент, доминирующие энергии, анализ домов, кармические указания, практические рекомендации.\n\n5 причин заказать:\n· Глубина, а не поверхностность.\n· Инструмент для роста, а не приговор.\n· Фокус на психологии и принятии.\n· Живой диалог, а не шаблон.\n· Фундамент на всю жизнь.\n\nИтог — подлинное откровение о судьбе и предназначении.", price:10000, duration:"анализ + консультация" },
+        { id:11, title:"Матрица судьбы — расшифровка кода рождения", description:"Суть:\nВаша дата рождения — персональный код, хранящий ответы на все главные вопросы. Рассчитывается и анализируется Матрица Судьбы на основе нумерологии и Таро.\n\nВы получите ясность в:\n· истинном предназначении\n· повторяющихся проблемах и способах их остановить\n· гармонизации личной жизни (родовые сценарии)\n· денежном потоке (какие энергии блокируют успех)\n\nПолноценная консультация с интерпретацией и практическими рекомендациями.", price:2500, duration:"разбор + консультация" },
+        { id:12, title:"Нумерологический анализ имени и даты рождения", description:"Суть:\nИмя, фамилия и дата рождения — это числовой код, «сейф» с деньгами, удачей и предназначением.\n\nРассчитываются:\n· Число Судьбы (предназначение и кармические задачи)\n· Число Имени (социальный образ, возможности)\n· Число Выражения (природные таланты)\n· Число Сердца (глубинные желания)\n\nРезультат:\n· сфера максимального заработка\n· совместимость с партнёрами\n· денежный код (что блокирует и что открывает канал)\n· сила рода (программы успеха или поражения)", price:2500, duration:"разбор" },
+        { id:13, title:"Персональный ритуал под ваш запрос", description:"Суть:\nКогда логика и обычные способы не работают, в игру вступают законы энергии. Ритуал — технология перенастройки энергоинформационного поля для сдвига вероятностей.\n\nКомплексная услуга: диагностика ситуации на Таро, подбор и проведение ритуала, отчёт в фото/видео. Работаю с любой темой: любовь, отношения, финансы, здоровье, карьера.\n\nДиагностика до и после включена.", price:6000, duration:"ритуал + диагностика" },
+        { id:14, title:"Психологическая консультация", description:"Формат:\nИндивидуальная сессия 1,5–2 часа в удобном формате (Telegram, VK). Работаю с одной проблемой за раз, используя закрытые психотехнологии, разработанные для спецслужб, подводников и экстренной реабилитации.\n\nКак проходит:\n1. Сканирование — диалог и анализ речи для поиска ключевой точки напряжения.\n2. Проработка — техника точечного психо-сброса, позволяющая перепрограммировать реакцию здесь и сейчас.\n3. Результат — конкретный алгоритм действий и новое внутреннее состояние.\n\nЗапросы: панические атаки, навязчивые мысли, выгорание, блоки в решениях, последствия насилия, вина, стыд.", price:2000, duration:"1.5–2 часа" },
+        { id:15, title:"Семантическое типирование", description:"Суть методологии:\nПсихологическая методология, изучающая 16 врождённых типов личности на основе учения К.Г. Юнга. Тип не меняется, он описывает способ обработки информации.\n\n4 функции: Логика–Этика, Сенсорика–Интуиция. У каждого типа две сильные и две слабые функции. Каждая функция имеет экстравертную (чёрную) и интровертную (белую) версию.\n\n16 типов разделены на квадры:\nАльфа (комфорт, творчество), Бета (сила, идеология), Гамма (власть, связи), Дельта (удовольствия, традиции).\n\nИспользование типирования:\n· понять сильные стороны и зоны роста\n· подобрать подходящую деятельность\n· прогнозировать совместимость в отношениях и работе\n\nКомплексное типирование (семантика + психософия) даёт полную картину психики.", price:2000, duration:"типирование", isTyping:true }
+    ];
+
+    const typingServices = [
+        { id:101, title:"Семантика", description:"Суть метода:\nОпределение семантического типа личности, описание сильных и слабых сторон", price:4000, duration:"анализ + отчёт", isTyping:true },
+        { id:102, title:"Психософия", description:"Суть метода:\nТипирование по системе психософии (4 функции психики)", price:4000, duration:"анализ", isTyping:true },
+        { id:103, title:"Двойное типирование", description:"Комплексное типирование по семантике и психософии", price:6000, duration:"расширенный отчёт + консультация", isTyping:true },
+        { id:104, title:"Двойное типирование + стратегия роста", description:"Полное типирование + стратегия личностного роста на год", price:7000, duration:"полный пакет", isTyping:true }
+    ];
+
+    const channels = [
+        { name:"Психология", desc:"практики и консультации", url:"https://t.me/+ampao30dhVBlMDQy" },
+        { name:"Эзотерика", desc:"тайные знания, духовные практики", url:"https://t.me/+GYtqdjcxR7djNDMy" },
+        { name:"Политика", desc:"анализ процессов", url:"https://t.me/suveren_s" },
+        { name:"Чёрная магия", desc:"ритуалы и традиции", url:"https://t.me/fraternitasplutoni" }
+    ];
+
+    function formatDescription(text) {
+        return text.split('\n').map(line => {
+            if (line.trim().endsWith(':')) {
+                return '<span class="description-heading">' + line + '</span>';
+            }
+            return line;
+        }).join('\n');
+    }
+
+    function renderServices(container, list) {
+        container.innerHTML = '';
+        list.forEach(s => {
+            let item = document.createElement('div');
+            item.className = 'service-item';
+            item.innerHTML = `
+                <div class="service-details">
+                    <div class="service-title">${s.title}</div>
+                    <div class="service-description">${s.description.substring(0,100)}…</div>
+                    <div class="service-price">${s.price} рублей <span class="duration">${s.duration}</span></div>
+                </div>
+                <div class="service-arrow">→</div>
+            `;
+            item.addEventListener('click', function() { selectService(s); });
+            container.appendChild(item);
+        });
+    }
+
+    function renderChannels() {
+        let container = document.getElementById('channelsList');
+        container.innerHTML = '';
+        channels.forEach(c => {
+            let item = document.createElement('div');
+            item.className = 'channel-item';
+            item.innerHTML = `<div class="channel-name">${c.name}</div><div class="channel-description">${c.desc}</div>`;
+            item.addEventListener('click', function() { openLink(c.url); });
+            container.appendChild(item);
+        });
+    }
+
+    function openLink(url) {
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            if (url.startsWith('https://t.me/') || url.startsWith('tg://')) {
+                tg.openTelegramLink(url);
+            } else {
+                tg.openLink(url);
+            }
+        } else {
+            window.open(url, '_blank');
+        }
+    }
+
+    let currentService = null;
+
+    function selectService(svc, skipHistory = false) {
+        if (currentService && currentService.id === svc.id && document.getElementById('selectedService').classList.contains('active')) return;
+        currentService = svc;
+        document.getElementById('selectedTitle').innerText = svc.title;
+        let desc = formatDescription(svc.description) + '\n\n<span class="duration-label">Продолжительность</span>: ' + svc.duration;
+        document.getElementById('selectedDescription').innerHTML = desc;
+        document.getElementById('paymentServiceTitle').innerText = svc.title;
+        document.getElementById('paymentAmount').innerText = svc.price;
+
+        let isTyping = svc.isTyping || false;
+        document.getElementById('regularPaymentDetails').style.display = isTyping ? 'none' : 'block';
+        document.getElementById('typingPaymentDetails').style.display = isTyping ? 'block' : 'none';
+        document.getElementById('telegramLink').setAttribute('data-url', isTyping ? 'https://t.me/tihon30000' : 'https://t.me/sordestar');
+
+        document.getElementById('selectedService').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
+        if (!skipHistory) {
+            history.pushState({ service: svc.id }, '', '#service');
+        }
+    }
+
+    function closeServicePanel() {
+        document.getElementById('selectedService').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+        currentService = null;
+        if (history.state && history.state.service) {
+            history.back();
+        }
+    }
+
+    function showPage(id, skipHistory = false) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (!skipHistory) {
+            history.pushState({ page: id }, '', `#${id}`);
+        }
+    }
+
+    const toast = document.getElementById('toast');
+    function showToast() {
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    window.addEventListener('popstate', function(event) {
+        if (event.state) {
+            if (event.state.page) {
+                showPage(event.state.page, true);
+                if (document.getElementById('selectedService').classList.contains('active')) {
+                    closeServicePanel();
+                }
+            } else if (event.state.service) {
+                let svc = mainServices.find(s => s.id == event.state.service) || typingServices.find(s => s.id == event.state.service);
+                if (svc) {
+                    selectService(svc, true);
+                } else {
+                    showPage('homePage', true);
+                }
+            }
+        } else {
+            showPage('homePage', true);
+            if (document.getElementById('selectedService').classList.contains('active')) {
+                document.getElementById('selectedService').classList.remove('active');
+                document.getElementById('overlay').classList.remove('active');
+                currentService = null;
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderServices(document.getElementById('servicesList'), mainServices);
+        renderServices(document.getElementById('typingServicesList'), typingServices);
+        renderChannels();
+
+        document.getElementById('servicesBtn').addEventListener('click', function() { showPage('servicesPage'); });
+        document.getElementById('channelsBtn').addEventListener('click', function() { showPage('channelsPage'); });
+        document.getElementById('backToHomeFromServices').addEventListener('click', function() { showPage('homePage'); });
+        document.getElementById('backToHomeFromChannels').addEventListener('click', function() { showPage('homePage'); });
+        document.getElementById('backToServicesBtn').addEventListener('click', function() { showPage('servicesPage'); });
+        document.getElementById('closeBtn').addEventListener('click', closeServicePanel);
+        document.getElementById('overlay').addEventListener('click', closeServicePanel);
+
+        // Кнопка общего чата с реальной ссылкой
+        document.getElementById('chatBtn').addEventListener('click', function() {
+            openLink('https://t.me/olgerdpubchat');
+        });
+
+        document.getElementById('telegramLink').addEventListener('click', function(e) {
+            e.stopPropagation();
+            let url = this.getAttribute('data-url');
+            if (url) openLink(url);
+        });
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                let text = this.getAttribute('data-text');
+                if (text) {
+                    navigator.clipboard?.writeText(text).catch(() => {});
+                    showToast();
+                }
+            });
+        });
+
+        const panel = document.getElementById('selectedService');
+        let touchStartY = 0;
+
+        panel.addEventListener('touchstart', (e) => {
+            if (!panel.classList.contains('active')) return;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        panel.addEventListener('touchmove', (e) => {
+            if (!panel.classList.contains('active')) return;
+            const touchY = e.touches[0].clientY;
+            const deltaY = touchY - touchStartY;
+            if (deltaY > 10 && panel.scrollTop <= 1) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeServicePanel();
+                touchStartY = touchY;
+            }
+        }, { passive: false });
+
+        if (!history.state) {
+            history.replaceState({ page: 'homePage' }, '', '#homePage');
+        }
+    });
+})();
+</script>
+</body>
+</html>
